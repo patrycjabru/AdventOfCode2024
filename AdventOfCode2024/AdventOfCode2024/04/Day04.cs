@@ -15,12 +15,56 @@ namespace AdventOfCode2024._04
 
             var inputAsArray = ConvertInputToArray(input);
 
-            return CountXMAS(inputAsArray).ToString();
+            return CountXMAS(inputAsArray, 'X', CheckNeighbourhoodForXMAS).ToString();
         }
         
         public string GetSecondAnswer()
         {
-            throw new NotImplementedException();
+            var input = InputReader.ReadInput("04").ToArray();
+
+            var inputAsArray = ConvertInputToArray(input);
+
+            return CountXMAS(inputAsArray, 'A', CheckNeighbourhoodForX_MAS).ToString();
+        }
+
+        private int CheckNeighbourhoodForX_MAS(int i, int j, char[,] input)
+        {
+            if (i >= 1 &&
+                i <= input.GetLength(0) - 2 &&
+                j >= 1 &&
+                j <= input.GetLength(1) - 2)
+            {
+                if (input[i - 1, j - 1] == 'M' &&
+                input[i - 1, j + 1] == 'M' &&
+                input[i + 1, j - 1] == 'S' &&
+                input[i + 1, j + 1] == 'S')
+                {
+                    return 1;
+                }
+
+                if (input[i - 1, j - 1] == 'S' &&
+                input[i - 1, j + 1] == 'S' &&
+                input[i + 1, j - 1] == 'M' &&
+                input[i + 1, j + 1] == 'M')
+                {
+                    return 1;
+                }
+                if (input[i - 1, j - 1] == 'M' &&
+                input[i - 1, j + 1] == 'S' &&
+                input[i + 1, j - 1] == 'M' &&
+                input[i + 1, j + 1] == 'S')
+                {
+                    return 1;
+                }
+                if (input[i - 1, j - 1] == 'S' &&
+                input[i - 1, j + 1] == 'M' &&
+                input[i + 1, j - 1] == 'S' &&
+                input[i + 1, j + 1] == 'M')
+                {
+                    return 1;
+                }
+            }
+            return 0;
         }
 
         private char[,] ConvertInputToArray(IEnumerable<string> input)
@@ -36,16 +80,17 @@ namespace AdventOfCode2024._04
 
             return result;
         }
-        private int CountXMAS(char[,] input)
+
+        private int CountXMAS(char[,] input, char centralChar, Func<int, int, char[,],int> CountInNeighbourhood)
         {
             var counter = 0;
             for (var i = 0; i < input.GetLength(0); i++)
             {
                 for ( var j = 0; j < input.GetLength(1); j++)
                 {
-                    if (input[i,j] == 'X')
+                    if (input[i,j] == centralChar)
                     {
-                        var countInNeighbourhood = CheckNeighbourhood(i, j, input);
+                        var countInNeighbourhood = CountInNeighbourhood(i, j, input);
                         counter += countInNeighbourhood;
                     }
                 }
@@ -53,7 +98,7 @@ namespace AdventOfCode2024._04
             return counter;
         }
 
-        private int CheckNeighbourhood(int i, int j, char[,] input)
+        private int CheckNeighbourhoodForXMAS(int i, int j, char[,] input)
         {
             var counter = 0;
             //down
