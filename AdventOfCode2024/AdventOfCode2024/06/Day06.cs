@@ -94,11 +94,25 @@
             if (CheckIfBorder(inputAsArray, guardPositionColumn, guardPositionRow))
             {
                 return false;
+            } 
+            if (CheckIfVisited(inputAsArray, guardPositionColumn, guardPositionRow))
+            {
+                return false;
             }
             var copy = CopyArray(inputAsArray);
             copy[guardPositionRow, guardPositionColumn] = '#';
             var isLoop = SimulateGuardRouteAndCheckForLoop(copy, guardPositionColumn, guardPositionRow, direction);
             return isLoop;
+        }
+
+        private bool CheckIfVisited(char[,] inputAsArray, int guardPositionColumn, int guardPositionRow)
+        {
+            var elementValue = inputAsArray[guardPositionRow, guardPositionColumn];
+            if (elementValue == '0' || elementValue == '1' || elementValue == '2' || elementValue == '3')
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool SimulateGuardRouteAndCheckForLoop(char[,] inputAsArray, int guardPositionColumn, int guardPositionRow, int direction)
