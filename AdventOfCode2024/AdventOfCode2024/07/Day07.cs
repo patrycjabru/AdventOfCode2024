@@ -19,10 +19,12 @@ namespace AdventOfCode2024._07
 
         public string GetSecondAnswer()
         {
-            throw new NotImplementedException();
+            var input = InputReader.ReadInput("07");
+
+            return GetCalibrationNumber(input, true).ToString();
         }
 
-        private long GetCalibrationNumber(IEnumerable<string> input)
+        private long GetCalibrationNumber(IEnumerable<string> input, bool additionalOperator = false)
         {
             long calibrationNumber = 0;
             foreach (var line in input)
@@ -32,7 +34,7 @@ namespace AdventOfCode2024._07
                 var numbersForIngridients = numbers[1..numbers.Length];
                 var ingridients = numbersForIngridients.Select(x => int.Parse(x));
 
-                var isResultTrue = CheckEquation(result, ingridients.ToArray());
+                var isResultTrue = CheckEquation(result, ingridients.ToArray(), additionalOperator);
 
                 if (isResultTrue)
                 {
@@ -43,9 +45,9 @@ namespace AdventOfCode2024._07
             return calibrationNumber;
         }
 
-        private bool CheckEquation(long result, int[] ingridients)
+        private bool CheckEquation(long result, int[] ingridients, bool additionalOperator)
         {
-            var combinations = GetOperatorsCombinations(ingridients.Count() - 1);
+            var combinations = GetOperatorsCombinations(ingridients.Count() - 1, additionalOperator);
 
             
             foreach (var combination in combinations)
@@ -62,6 +64,10 @@ namespace AdventOfCode2024._07
                     {
                         realResult *= ingridients[ingridientsIndex + 1];
                     }
+                    else if (additionalOperator && c == '|')
+                    {
+                        realResult = long.Parse(realResult.ToString() + ingridients[ingridientsIndex + 1]);
+                    }
                     ingridientsIndex++;
                 }
                 if (realResult == result)
@@ -70,19 +76,11 @@ namespace AdventOfCode2024._07
                 }
             }
 
-            //Console.WriteLine("==========");
-            //Console.WriteLine(result);
-            //foreach (var i in ingridients)
-            //{
-            //    Console.Write(" " + i.ToString());
-            //}
-            //Console.WriteLine();
-
             return false;
 
         }
 
-        private List<string> GetOperatorsCombinations(int length)
+        private List<string> GetOperatorsCombinations(int length, bool additionalOperator)
         {
             if (operatorsCombinations.ContainsKey(length))
             {
@@ -90,14 +88,14 @@ namespace AdventOfCode2024._07
             }
 
             var combinations = new List<string>();
-            GenerateCombinations(length, "", combinations);
+            GenerateCombinations(length, "", combinations, additionalOperator);
 
             operatorsCombinations.Add(length, combinations);
 
             return combinations;
         }
 
-        static void GenerateCombinations(int length, string currentCombination, List<string> combinations)
+        static void GenerateCombinations(int length, string currentCombination, List<string> combinations, bool additionalOperator)
         {
             if (currentCombination.Length == length)
             {
@@ -105,8 +103,12 @@ namespace AdventOfCode2024._07
                 return;
             }
 
-            GenerateCombinations(length, currentCombination + "+", combinations);
-            GenerateCombinations(length, currentCombination + "*", combinations);
+            GenerateCombinations(length, currentCombination + "+", combinations, additionalOperator);
+            GenerateCombinations(length, currentCombination + "*", combinations, additionalOperator);
+            if (additionalOperator)
+            {
+                GenerateCombinations(length, currentCombination + "|", combinations, additionalOperator);
+            }
         }
     }
 }
