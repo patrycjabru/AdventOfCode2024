@@ -14,6 +14,20 @@ namespace AdventOfCode2024
             return File.ReadLines(fullPath);
         }
 
+        public static char[,] ConvertInputToTwodimmensionalArray(IEnumerable<string> input)
+        {
+            char[,] result = input
+                .Select((str, rowIndex) => str.Select((c, colIndex) => new { rowIndex, colIndex, c }))
+                .SelectMany(x => x)
+                .Aggregate(
+                    new char[input.Count(), input.Max(s => s.Length)],
+                (arr, x) => {
+                    arr[x.rowIndex, x.colIndex] = x.c; return arr;
+                });
+
+            return result;
+        }
+
         private static string GetInputPath(string directoryName)
         {
             return Path.Combine(GetSourceDirectory(), directoryName, "input.txt");
