@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,19 @@ namespace AdventOfCode2024._10
 
         public string GetSecondAnswer()
         {
-            throw new NotImplementedException();
+            var input = InputReader.ReadInput("10");
+            var inputAsArray = InputReader.ConvertInputToTwodimmensionalArray(input);
+
+            int[,] convertedInput;
+            var startingPoints = GetStartingPoints(inputAsArray, out convertedInput);
+
+            var topCounter = 0;
+            foreach (var point in startingPoints)
+            {
+                topCounter += CountUniqueWaysToTop(point, convertedInput);
+            }
+
+            return topCounter.ToString();
         }
 
         public List<Point> GetStartingPoints(char[,] input, out int[,] convertedInput)
@@ -50,7 +63,7 @@ namespace AdventOfCode2024._10
 
         public int CountWaysToTop(Point startingPoint, int[,] input)
         {
-            var peaks = new HashSet<Point>();
+            ICollection<Point> peaks = new HashSet<Point>();
             CheckWay(startingPoint.row, startingPoint.column - 1, input, 0, peaks);
             CheckWay(startingPoint.row, startingPoint.column + 1, input, 0, peaks);
             CheckWay(startingPoint.row - 1, startingPoint.column, input, 0, peaks);
@@ -59,7 +72,18 @@ namespace AdventOfCode2024._10
             return peaks.Count;
         }
 
-        public void CheckWay(int row, int column, int[,] input, int previousValue, HashSet<Point> peaks)
+        public int CountUniqueWaysToTop(Point startingPoint, int[,] input)
+        {
+            ICollection<Point> peaks = new List<Point>();
+            CheckWay(startingPoint.row, startingPoint.column - 1, input, 0, peaks);
+            CheckWay(startingPoint.row, startingPoint.column + 1, input, 0, peaks);
+            CheckWay(startingPoint.row - 1, startingPoint.column, input, 0, peaks);
+            CheckWay(startingPoint.row + 1, startingPoint.column, input, 0, peaks);
+
+            return peaks.Count;
+        }
+
+        public void CheckWay(int row, int column, int[,] input, int previousValue, ICollection<Point> peaks)
         {
             if (row < 0 || column < 0 || row >= input.GetLength(0) || column >= input.GetLength(1))
                 return;
