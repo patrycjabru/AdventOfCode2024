@@ -28,6 +28,16 @@ namespace AdventOfCode2024
             return result;
         }
 
+        public static char DigitToChar(int digit)
+        {
+            return (char)(digit + '0');
+        }
+
+        public static int CharToDigit(char character)
+        {
+            return (character - '0');
+        }
+
         private static string GetInputPath(string directoryName)
         {
             return Path.Combine(GetSourceDirectory(), directoryName, "input.txt");
