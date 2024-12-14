@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2024._11
 {
-    public class StoneOnString
+    public class Stone
     {
         public string Number { get; set; }
 
         public long Count { get; set; }
 
-        public StoneOnString(string number)
+        public Stone(string number)
         {
             Count = 1;
             this.Number = long.Parse(number).ToString();
@@ -46,9 +46,9 @@ namespace AdventOfCode2024._11
 
         public override bool Equals(object? other)
         {
-            if (other != null && other is StoneOnString)
+            if (other != null && other is Stone)
             {
-                var otherStone = (StoneOnString)other;
+                var otherStone = (Stone)other;
                 if (otherStone.Number == Number)
                 {
                     return true;

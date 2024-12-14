@@ -38,10 +38,10 @@ namespace AdventOfCode2024._11
             return counter.ToString();
         }
 
-        private Dictionary<string, StoneOnString> TransformWithDict(Dictionary<string, StoneOnString> stones)
+        private Dictionary<string, Stone> TransformWithDict(Dictionary<string, Stone> stones)
         {
-            var newDict = new Dictionary<string, StoneOnString>();
-            foreach (KeyValuePair<string, StoneOnString> s in stones)
+            var newDict = new Dictionary<string, Stone>();
+            foreach (KeyValuePair<string, Stone> s in stones)
             {
                 var stone = s.Value;
                 if (stone.CheckIfZero())
@@ -52,9 +52,9 @@ namespace AdventOfCode2024._11
                 else if (stone.HasEvenNumberOfDigits())
                 {
                     var newNumbers = stone.SplitNumber();
-                    var stone1 = new StoneOnString(newNumbers.Item1);
+                    var stone1 = new Stone(newNumbers.Item1);
                     stone1.Count = stone.Count;
-                    var stone2 = new StoneOnString(newNumbers.Item2);
+                    var stone2 = new Stone(newNumbers.Item2);
                     stone2.Count = stone.Count;
                     AddToDict(newDict, stone1);
                     AddToDict(newDict, stone2);
@@ -68,9 +68,9 @@ namespace AdventOfCode2024._11
             return newDict;
         }
 
-        private void AddToDict(Dictionary<string, StoneOnString> newDict, StoneOnString stone)
+        private void AddToDict(Dictionary<string, Stone> newDict, Stone stone)
         {
-            if (newDict.TryGetValue(stone.Number, out StoneOnString newStone))
+            if (newDict.TryGetValue(stone.Number, out Stone newStone))
             {
                 newStone.Count += stone.Count;
             }
@@ -80,9 +80,9 @@ namespace AdventOfCode2024._11
             }
         }
 
-        private Dictionary<string, StoneOnString> CreateStones(IEnumerable<string> stonesNumbers)
+        private Dictionary<string, Stone> CreateStones(IEnumerable<string> stonesNumbers)
         {
-            var stones = new Dictionary<string, StoneOnString>();
+            var stones = new Dictionary<string, Stone>();
             foreach (var stone in stonesNumbers)
             {
                 if (stones.ContainsKey(stone))
@@ -91,7 +91,7 @@ namespace AdventOfCode2024._11
                 }
                 else
                 {
-                    stones.Add(stone, new StoneOnString(stone));
+                    stones.Add(stone, new Stone(stone));
                 }
             }
 
