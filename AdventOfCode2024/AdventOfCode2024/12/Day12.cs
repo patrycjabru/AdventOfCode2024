@@ -25,13 +25,102 @@ namespace AdventOfCode2024._12
 
         public string GetSecondAnswer()
         {
-            throw new NotImplementedException();
+            var input = InputReader.ReadInput("12");
+            var inputAsArray = InputReader.ConvertInputToTwodimmensionalArray(input);
+
+            var nodes = MarkNodesWithRegions(inputAsArray);
+
+            var count = CountWithDiscout(nodes);
+
+            return count.ToString();
+        }
+
+        private int CountWithDiscout(Node[,] nodes)
+        {
+            Dictionary<int, HashSet<DirectedPoint>> borders;
+            Dictionary<int, int> areaCount;
+            FindBordersAndArea(nodes, out borders, out areaCount);
+            var sides = CountSides(borders);
+
+            var sum = 0;
+            for (var i = 0; i < MaxIndex; i++)
+            {
+                if (areaCount.ContainsKey(i))
+                {
+                    sum += sides[i] * areaCount[i];
+                }
+            }
+            return sum;
+        }
+
+        private Dictionary<int, int> CountSides(Dictionary<int, HashSet<DirectedPoint>> borders)
+        {
+            var allSides = new Dictionary<int, int>();
+            foreach (var region in borders)
+            {
+                var sides = 0;
+                foreach (var borderNode in region.Value)
+                {
+                    if (borderNode.direction == 0) // up border, down fence
+                    {
+                        var rightNode = region.Value.FirstOrDefault(x => x.direction == 0 && x.column == borderNode.column + 1 && x.row == borderNode.row);
+                        if (rightNode == null)
+                        {
+                            sides++;
+                        }
+                    }
+                    else if (borderNode.direction == 1) // right border, left fence
+                    {
+                        var downNode = region.Value.FirstOrDefault(x => x.direction == 1 && x.column == borderNode.column && x.row == borderNode.row + 1);
+                        if (downNode == null)
+                        {
+                            sides++;
+                        }
+
+                    }
+                    else if (borderNode.direction == 2) // down border, up fence
+                    {
+                        var leftNode = region.Value.FirstOrDefault(x => x.direction == 2 && x.column == borderNode.column - 1 && x.row == borderNode.row);
+                        if (leftNode == null)
+                        {
+                            sides++;
+                        }
+                    }
+                    else // left border, right fence
+                    {
+                        var upNode = region.Value.FirstOrDefault(x => x.direction == 3 && x.column == borderNode.column && x.row == borderNode.row - 1);
+                        if (upNode == null)
+                        {
+                            sides++;
+                        }
+                    }
+                }
+                allSides.Add(region.Key, sides);
+            }
+            return allSides;
         }
 
         private int Count(Node[,] nodes)
         {
-            var borders = new Dictionary<int, HashSet<DirectedPoint>>();
-            var areaCount = new Dictionary<int, int>(); //regionalNumber - area
+            Dictionary<int, HashSet<DirectedPoint>> borders;
+            Dictionary<int, int> areaCount;
+            FindBordersAndArea(nodes, out borders, out areaCount);
+
+            var sum = 0;
+            for (var i = 0; i < MaxIndex; i++)
+            {
+                if (areaCount.ContainsKey(i))
+                {
+                    sum += borders[i].Count * areaCount[i];
+                }
+            }
+            return sum;
+        }
+
+        private void FindBordersAndArea(Node[,] nodes, out Dictionary<int, HashSet<DirectedPoint>> borders, out Dictionary<int, int> areaCount)
+        {
+            borders = new Dictionary<int, HashSet<DirectedPoint>>();
+            areaCount = new Dictionary<int, int>();
             for (var i = 0; i < nodes.GetLength(0); i++)
             {
                 for (var j = 0; j < nodes.GetLength(1); j++)
@@ -47,16 +136,6 @@ namespace AdventOfCode2024._12
                     CheckAndAddToBorders(borders, nodes, i, j, i, j + 1, 1);
                 }
             }
-
-            var sum = 0;
-            for(var i = 0; i < MaxIndex; i++)
-            {
-                if (areaCount.ContainsKey(i))
-                {
-                    sum += borders[i].Count * areaCount[i];
-                }
-            }
-            return sum;
         }
 
         private void CheckAndAddToBorders(Dictionary<int, HashSet<DirectedPoint>> borders, Node[,] nodes, int i, int j, int a, int b, int direction)
