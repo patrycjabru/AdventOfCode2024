@@ -56,5 +56,5 @@ var day10 = new Day10();
 //Console.WriteLine($"Answer for day10: {day10.GetSecondAnswer()}");
 
 var day11 = new Day11();
-Console.WriteLine($"Answer for day11: {day11.GetFirstAnswer()}");
-//Console.WriteLine($"Answer for day11: {day11.GetSecondAnswer()}");
+//Console.WriteLine($"Answer for day11: {day11.GetFirstAnswer()}");
+Console.WriteLine($"Answer for day11: {day11.GetSecondAnswer()}");

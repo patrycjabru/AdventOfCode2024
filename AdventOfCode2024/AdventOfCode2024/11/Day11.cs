@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace AdventOfCode2024._11
 {
@@ -10,57 +11,91 @@ namespace AdventOfCode2024._11
     {
         public string GetFirstAnswer()
         {
-            var input = InputReader.ReadInput("11");
-            var stoneNumbers = input.First().Split(' ');
-
-            var stones = CreateStones(stoneNumbers).ToList();
-
-            for (var i = 0; i < 25; i++)
-            {
-                TransfromStones(stones);
-            }
-
-            return stones.Count.ToString();
+            return Count(25);
         }
 
         public string GetSecondAnswer()
         {
-            throw new NotImplementedException();
+            return Count(75);
         }
 
-        private IEnumerable<Stone> CreateStones(IEnumerable<string> stones)
+        private string Count(int iterations)
         {
+            var input = InputReader.ReadInput("11");
+            var stoneNumbers = input.First().Split(' ');
+
+            var stones = CreateStones(stoneNumbers);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                stones = TransformWithDict(stones);
+            }
+            long counter = 0;
             foreach (var stone in stones)
             {
-                yield return new Stone()
-                {
-                    Number = long.Parse(stone)
-                };
+                counter += stone.Value.Count;
             }
+            return counter.ToString();
         }
 
-        private void TransfromStones(List<Stone> stones)
+        private Dictionary<string, StoneOnString> TransformWithDict(Dictionary<string, StoneOnString> stones)
         {
-            for (int i = 0; i < stones.Count; i++)
+            var newDict = new Dictionary<string, StoneOnString>();
+            foreach (KeyValuePair<string, StoneOnString> s in stones)
             {
-                if (stones[i].Number == 0)
+                var stone = s.Value;
+                if (stone.CheckIfZero())
                 {
-                    stones[i].Number = 1;
+                    stone.Number = "1";
+                    AddToDict(newDict, stone);
                 }
-                else if (stones[i].HasEvenNumberOfDigits())
+                else if (stone.HasEvenNumberOfDigits())
                 {
-                    var oldStone = stones[i];
-                    var newNumbers = oldStone.SplitNumber();
-                    stones.RemoveAt(i);
-                    stones.Insert(i, new Stone() { Number = newNumbers.Item1 });
-                    stones.Insert(i + 1, new Stone() { Number = newNumbers.Item2});
-                    i++;
+                    var newNumbers = stone.SplitNumber();
+                    var stone1 = new StoneOnString(newNumbers.Item1);
+                    stone1.Count = stone.Count;
+                    var stone2 = new StoneOnString(newNumbers.Item2);
+                    stone2.Count = stone.Count;
+                    AddToDict(newDict, stone1);
+                    AddToDict(newDict, stone2);
                 }
                 else
                 {
-                    stones[i].MultiplyNumberBy2024();
+                    stone.MultiplyNumberBy2024();
+                    AddToDict(newDict, stone);
                 }
             }
-        } 
+            return newDict;
+        }
+
+        private void AddToDict(Dictionary<string, StoneOnString> newDict, StoneOnString stone)
+        {
+            if (newDict.TryGetValue(stone.Number, out StoneOnString newStone))
+            {
+                newStone.Count += stone.Count;
+            }
+            else
+            {
+                newDict.Add(stone.Number, stone);
+            }
+        }
+
+        private Dictionary<string, StoneOnString> CreateStones(IEnumerable<string> stonesNumbers)
+        {
+            var stones = new Dictionary<string, StoneOnString>();
+            foreach (var stone in stonesNumbers)
+            {
+                if (stones.ContainsKey(stone))
+                {
+                    stones[stone].Count++;
+                }
+                else
+                {
+                    stones.Add(stone, new StoneOnString(stone));
+                }
+            }
+
+            return stones;
+        }
     }
 }
