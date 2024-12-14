@@ -16,8 +16,6 @@ namespace AdventOfCode2024._12
 
             var nodes = MarkNodesWithRegions(inputAsArray);
 
-            //var regions = GetRegions(nodes);
-            //PrintRegions(nodes);
             var count = Count(nodes);
 
             return count.ToString();
@@ -150,50 +148,6 @@ namespace AdventOfCode2024._12
             {
                 border.Add(new DirectedPoint(a, b, direction));
             }
-        }
-
-        private void CheckAndAddToPerimeterCounter(Dictionary<int, int> perimeterCount, Node[,] nodes, int i, int j, int a, int b)
-        {
-            if (a < 0 || a >= nodes.GetLength(0) || b < 0 || b >= nodes.GetLength(1))
-            {
-                perimeterCount[nodes[i, j].RegionNumber]++;
-                return;
-            }
-            if (nodes[i, j].RegionNumber != nodes[a, b].RegionNumber)
-            {
-                perimeterCount[nodes[i, j].RegionNumber]++;
-            }
-        }
-
-        //private Dictionary<int, List<Node>> GetRegions(Node[,] nodes)
-        //{
-        //    var regions = new Dictionary<int, List<Node>>();
-        //    foreach (var node in nodes)
-        //    {
-        //        if (regions.ContainsKey(node.RegionNumber))
-        //        {
-        //            regions[node.RegionNumber].Add(node);
-        //        }
-        //        else
-        //        {
-        //            regions[node.RegionNumber] = new List<Node>() { node };
-        //        }
-        //    }
-        //    return regions;
-        //}
-
-        private void PrintRegions(Node[,] nodes)
-        {
-            for (var i = 0; i < nodes.GetLength(0); i++)
-            {
-                for (var j = 0; j < nodes.GetLength(1); j++)
-                {
-                    Console.Write(nodes[i, j].RegionNumber);
-                    Console.Write(" ");
-                }
-                Console.WriteLine();
-            }
-
         }
 
         private Node[,] MarkNodesWithRegions(char[,] input)
