@@ -22,7 +22,24 @@ namespace AdventOfCode2024._13
 
         public string GetSecondAnswer()
         {
-            throw new NotImplementedException();
+            var input = InputReader.ReadInput("13");
+
+            var games = TransformInput(input);
+            FixConversionError(games);
+            foreach (var game in games)
+            {
+                CountClicksAndTokens(game);
+            }
+            return games.Sum(x => x.UsedTokens).ToString();
+        }
+
+        private void FixConversionError(List<Game> games)
+        {
+            foreach (var game in games)
+            {
+                game.PrizeX += 10000000000000;
+                game.PrizeY += 10000000000000;
+            }
         }
 
         public void CountClicksAndTokens(Game game)

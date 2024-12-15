@@ -8,17 +8,17 @@ namespace AdventOfCode2024._13
 {
     public class Game
     {
-        public int OneAButtonPressX { get; set; }
-        public int OneAButtonPressY { get; set; }
-        public int OneBButtonPressX { get; set; }
-        public int OneBButtonPressY { get; set; }
-        public int PrizeX { get; set; }
-        public int PrizeY { get; set; }
+        public long OneAButtonPressX { get; set; }
+        public long OneAButtonPressY { get; set; }
+        public long OneBButtonPressX { get; set; }
+        public long OneBButtonPressY { get; set; }
+        public long PrizeX { get; set; }
+        public long PrizeY { get; set; }
 
-        public int AClicks { get; set; }
+        public long AClicks { get; set; }
 
-        public int BClicks { get; set; }
+        public long BClicks { get; set; }
 
-        public int UsedTokens { get; set; }
+        public long UsedTokens { get; set; }
     }
 }
