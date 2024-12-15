@@ -23,7 +23,71 @@ namespace AdventOfCode2024._14
 
         public string GetSecondAnswer()
         {
-            throw new NotImplementedException();
+            var input = InputReader.ReadInput("14");
+
+            var robots = ParseInput(input).ToList();
+            //DisplayRobots(robots, 101, 103);
+            for (var i = 0; i < 10403; i++)
+            {
+                CalculateFinalPosition(robots, 101, 103, i);
+                
+                foreach (var robot in robots)
+                {
+                    if (robots.FirstOrDefault(x => x.CurrentPosition.row == robot.CurrentPosition.row && x.CurrentPosition.column == robot.CurrentPosition.column + 1) != null)
+                    {
+                        if (robots.FirstOrDefault(x => x.CurrentPosition.row == robot.CurrentPosition.row && x.CurrentPosition.column == robot.CurrentPosition.column + 2) != null) 
+                        {
+                            if (robots.FirstOrDefault(x => x.CurrentPosition.row == robot.CurrentPosition.row && x.CurrentPosition.column == robot.CurrentPosition.column + 3) != null) 
+                            {
+                                if (robots.FirstOrDefault(x => x.CurrentPosition.row == robot.CurrentPosition.row && x.CurrentPosition.column == robot.CurrentPosition.column + 4) != null)
+                                {
+                                    if (robots.FirstOrDefault(x => x.CurrentPosition.row == robot.CurrentPosition.row && x.CurrentPosition.column == robot.CurrentPosition.column + 5) != null)
+                                    {
+                                        Console.WriteLine("Iterations: " + i);
+                                        DisplayRobots(robots, 101, 103);
+                                        Console.WriteLine("===========================================================" + i);
+                                        Thread.Sleep(500);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return "";
+        }
+
+        private void DisplayRobots(IList<Robot> robots, int width, int length)
+        {
+            var room = new char[width, length];
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    room[j, i] = '.';
+                }
+            }
+            foreach (var robot in robots) 
+            {
+                if (robot.CurrentPosition == null)
+                {
+                    room[robot.StartingPosition.column, robot.StartingPosition.row] = 'X';
+                }
+                else
+                {
+                    room[robot.CurrentPosition.column, robot.CurrentPosition.row] = 'X';
+                }
+            }
+
+            for (int j = 0; j < length; j++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    Console.Write(room[i, j]);
+                }
+                Console.WriteLine();
+            }
         }
 
         private long CalculateSafetyFactor(IEnumerable<Robot> robots)
@@ -60,7 +124,7 @@ namespace AdventOfCode2024._14
                 {
                     finalPositionRow = roomLength + finalPositionRow;
                 }
-                robot.CurrentPosition = new Point(finalPositionColumn, finalPositionRow);
+                robot.CurrentPosition = new Point(finalPositionRow, finalPositionColumn);
                 robot.Quadrant = FindQuadrant(roomWidth, roomLength, robot, finalPositionColumn, finalPositionRow);
             }
         }
