@@ -13,6 +13,7 @@ using AdventOfCode2024._12;
 using AdventOfCode2024._13;
 using AdventOfCode2024._14;
 using AdventOfCode2024._15;
+using AdventOfCode2024._16;
 
 Console.WriteLine("Hello, Advent!");
 
@@ -76,5 +77,9 @@ var day14 = new Day14();
 //Console.WriteLine($"Answer for day14: {day14.GetSecondAnswer()}");
 
 var day15 = new Day15();
-Console.WriteLine($"Answer for day15: {day15.GetFirstAnswer()}");
+//Console.WriteLine($"Answer for day15: {day15.GetFirstAnswer()}");
 //Console.WriteLine($"Answer for day15: {day15.GetSecondAnswer()}");
+
+var day16 = new Day16();
+Console.WriteLine($"Answer for day16: {day16.GetFirstAnswer()}");
+//Console.WriteLine($"Answer for day16: {day16.GetSecondAnswer()}");
