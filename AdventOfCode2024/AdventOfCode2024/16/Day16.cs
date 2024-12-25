@@ -27,9 +27,19 @@ namespace AdventOfCode2024._16
         {
             var input = InputReader.ReadInput("16");
             var inputAsArray = InputReader.ConvertInputToTwodimmensionalArray(input);
+            char[,] transposed = TransposeMaze(inputAsArray);
+
+            var (start, end) = FindStartAndEnd(inputAsArray);
+
+            var cells = FindShortestPathCells(transposed, start.column, start.row, end.column, end.row);
+
+            return cells.Count.ToString();
+        }
+
+        private static char[,] TransposeMaze(char[,] inputAsArray)
+        {
             char[,] transposed = new char[inputAsArray.GetLength(1), inputAsArray.GetLength(0)];
 
-            // Perform the row-column swap (transpose the array)
             for (int i = 0; i < inputAsArray.GetLength(0); i++)
             {
                 for (int j = 0; j < inputAsArray.GetLength(1); j++)
@@ -38,11 +48,7 @@ namespace AdventOfCode2024._16
                 }
             }
 
-            var (start, end) = FindStartAndEnd(inputAsArray);
-
-            var cells = FindShortestPathCells(transposed, start.column, start.row, end.column, end.row);
-
-            return cells.Count.ToString();
+            return transposed;
         }
 
         private (Point?, Point?) FindStartAndEnd(char[,] input)
@@ -99,32 +105,29 @@ namespace AdventOfCode2024._16
             return distances;
         }
 
-        public static List<(int x, int y)> FindShortestPathCells(char[,] maze, int startX, int startY, int endX, int endY)
+        public static List<(int x, int y)> FindShortestPathCells(char[,] maze, int startCol, int startRow, int endCol, int endRow)
         {
             int rows = maze.GetLength(0);
             int cols = maze.GetLength(1);
 
-            // Compute shortest path distances from the start and the end
-            int[,] startDistances = Dijkstra(maze, startX, startY, endX, endY, Direction.Up);
-            int[,] endDistances = Dijkstra(maze, endX, endY, startX, startY, Direction.Down);
+            int[,] startDistances = Dijkstra(maze, startCol, startRow, endCol, endRow, Direction.Up);
+            int[,] endDistances = Dijkstra(maze, endCol, endRow, startCol, startRow, Direction.Down);
 
-            // Find the length of the shortest path from start to end
-            int shortestPathLength = startDistances[endX, endY];
+            int shortestPathLength = startDistances[endCol, endRow];
             if (shortestPathLength == int.MaxValue)
             {
                 Console.WriteLine("No path found.");
                 return null;
             }
 
-            // Iterate through the maze and find all cells that belong to all shortest paths
-            List<(int x, int y)> commonCells = new List<(int x, int y)>();
+            List<(int, int)> commonCells = new List<(int, int)>();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < cols; j++)
                 {
                     var fromStart = startDistances[i, j];
                     var fromEnd = endDistances[i, j];
-                    // Check if the cell is open and part of the shortest paths
+
                     if (maze[i, j] != '#' &&
                         fromStart + fromEnd == shortestPathLength || fromStart + fromEnd + 1000 == shortestPathLength)
                     {
@@ -132,11 +135,6 @@ namespace AdventOfCode2024._16
                     }
                 }
             }
-
-            //foreach (var cell in commonCells)
-            //{
-            //    Console.WriteLine(cell);
-            //}
 
             return commonCells;
         }
