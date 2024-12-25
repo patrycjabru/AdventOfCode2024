@@ -81,5 +81,5 @@ var day15 = new Day15();
 //Console.WriteLine($"Answer for day15: {day15.GetSecondAnswer()}");
 
 var day16 = new Day16();
-Console.WriteLine($"Answer for day16: {day16.GetFirstAnswer()}");
-//Console.WriteLine($"Answer for day16: {day16.GetSecondAnswer()}");
+//Console.WriteLine($"Answer for day16: {day16.GetFirstAnswer()}");
+Console.WriteLine($"Answer for day16: {day16.GetSecondAnswer()}");

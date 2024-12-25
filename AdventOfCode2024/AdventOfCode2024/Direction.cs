@@ -11,6 +11,7 @@ namespace AdventOfCode2024
         Up,
         Right,
         Down,
-        Left
+        Left,
+        None
     }
 }
